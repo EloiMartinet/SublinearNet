@@ -41,7 +41,11 @@ Each experiment corresponds to a **single script**, except for the torsion bench
 python scripts/poisson_galerkin.py
 ```
 
-This solves a PDE-constrained shape optimization problem using a mesh-free Galerkin method.
+This reproduces the optimization of shapes minimizing:
+[
+J(\Omega) = \int_\Omega u_\Omega
+]
+where (u_\Omega) solves a Poisson equation.
 
 ---
 
@@ -59,14 +63,38 @@ $$
 \mathrm{Vol}(\Omega)\mathrm{Vol}(\Omega^\circ)
 $$
 
-and recovers symmetric optimal shapes.
+among shapes satisfying certain symmetries.
 
 ---
 
-## 3. Torsion Experiments (Main Benchmark)
+## 3. Optimization of the Maximum of the Torsion function
 
 📍 Paper: Section *4.3 – Maximization of the gradient of the torsion function* 
-📍 Also includes comparison with PINNs (Appendix / Section C)
+
+```bash
+python scripts/max_torsion.py
+```
+
+This script explores torsion-based optimization objectives (related to Section 4.3).
+
+---
+
+## 4. Minkowski Problem
+
+📍 Paper: Section *4.4 – Minkowski problem* 
+
+```bash
+python scripts/minkovski_problem.py
+```
+
+Solves a curvature prescription problem via neural parametrization.
+
+---
+
+
+## 5. Comparison with PINNs
+
+📍 Maximizes the torsion function by three different methods (Appendix / Section C)
 
 This benchmark compares:
 
@@ -141,28 +169,6 @@ This reproduces the PINN hyperparameter search described in the paper.
 
 ---
 
-## 4. Alternative Torsion Optimization
-
-```bash
-python scripts/max_torsion.py
-```
-
-This script explores torsion-based optimization objectives (related to Section 4.3).
-
----
-
-## 5. Minkowski Problem
-
-📍 Paper: Section *4.4 – Minkowski problem* 
-
-```bash
-python scripts/minkovski_problem.py
-```
-
-Solves a curvature prescription problem via neural parametrization.
-
----
-
 ## 📁 Output Files
 
 Results are saved in:
@@ -176,31 +182,9 @@ res/
 
 ---
 
-## ⚙️ Hardware & Runtime
-
-* CPU execution (as in the paper)
-* GPU optional (PyTorch-compatible)
-* Typical runtimes:
-
-  * 2D experiments: ~1 minute
-  * 3D experiments: ~10 minutes 
-
----
-
-## 🧠 Methods Overview
-
-* Convex sets are parameterized using **sublinear neural networks**
-* PDEs are solved using:
-
-  * Mesh-free Galerkin methods
-  * Method of Fundamental Solutions
-  * PINNs (for comparison only)
-
-The paper shows that classical solvers outperform PINNs in both accuracy and efficiency .
-
----
-
 ## 📖 Citation
+
+If you use this code in you own research, please cite:
 
 ```bibtex
 @article{sublinear_nn_convex_sets,
@@ -210,24 +194,3 @@ The paper shows that classical solvers outperform PINNs in both accuracy and eff
   year={2026}
 }
 ```
-
----
-
-## ✅ Summary
-
-* One script = one experiment
-* Exception: torsion → use `run_torsion_experiments.py`
-* PINNs require `--config`
-* Results saved in `res/`
-
----
-
-## 🛠️ Notes
-
-* No mesh is required (fully mesh-free methods)
-* Automatic differentiation handles all geometric quantities
-* Designed for reproducibility with minimal setup
-
----
-
-Feel free to open an issue for questions or reproducibility concerns.
