@@ -67,7 +67,7 @@ among shapes satisfying certain symmetries.
 
 ---
 
-## 3. Optimization of the Maximum of the Torsion function
+## 3. Optimization of the gradient of the torsion function
 
 📍 Paper: Section *4.3 – Maximization of the gradient of the torsion function* 
 
