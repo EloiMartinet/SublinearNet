@@ -5,6 +5,7 @@ from tqdm import tqdm
 import math
 from time import time
 import csv
+import argparse
 
 from shapes.pinn import DirichletPINN
 from shapes.invertible_nn import ConvexDiffeo
@@ -17,8 +18,18 @@ OUTPUT_FOLDER = 'res/torsion_PINN'
 DIM = 2
 N_UNIT = 30
 N_POINTS = 20_000
-CONFIG = 'config_2'
 MAX_TIME = 3600 # Run for max 1 hour
+
+# Get the config
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--config',
+    type=str,
+    default='config_2',
+    choices=['config_1', 'config_2', 'config_3']
+)
+args = parser.parse_args()
+CONFIG = args.config
 
 # Create the output folder
 shutil.rmtree(OUTPUT_FOLDER, ignore_errors=True)
