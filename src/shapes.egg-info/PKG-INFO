@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: shapes
+Version: 0.0.1
+Summary: Convex shape optimization library in Pytorch
+Author: Eloi Martinet
+License-File: LICENSE
+Requires-Dist: torch
+Requires-Dist: numpy
+Requires-Dist: matplotlib
+Requires-Dist: pyvista
+Requires-Dist: fiblat
+Dynamic: author
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: summary
