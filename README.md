@@ -42,9 +42,11 @@ python scripts/fit_noisy_single.py
 ```
 
 This reproduces the optimization of shapes minimizing:
+
 $$
 L(\theta) = \sum_{i=1}^n |p_\theta(y_i) - 1|^2
 $$
+
 where $p_\theta$ is the gauge function of a convex and the $y_i$ are noisy measurements of the boundary of a convex set.
 
 The statistical experiments (Appendix F) can be run with
