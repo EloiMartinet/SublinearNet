@@ -5,6 +5,7 @@ Implementation of the paper:
 
 This repository provides code to reproduce the numerical experiments from the paper, including:
 
+* Shape reconstruction
 * PDE-constrained shape optimization
 * Mahler volume minimization
 * Torsion-based optimization (MFS, Galerkin, PINNs)
