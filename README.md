@@ -67,9 +67,11 @@ python scripts/poisson_galerkin.py
 ```
 
 This reproduces the optimization of shapes minimizing:
+
 $$
 J(\Omega) = \int_\Omega u_\Omega
 $$
+
 where $u_\Omega$ solves a Poisson equation.
 
 ---
