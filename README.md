@@ -33,9 +33,34 @@ Each experiment corresponds to a **single script**, except for the torsion bench
 
 ---
 
-## 1. Poisson Shape Optimization
+## 1. Shape reconstruction
 
-📍 Paper: Section *4.1 – Optimization of a Poisson problem* 
+📍 Paper: Section *4.1 – Learning convex sets with noisy boundary samples* 
+
+```bash
+python scripts/fit_noisy_single.py
+```
+
+This reproduces the optimization of shapes minimizing:
+[
+L(\theta) = \sum_{i=1}^n |p_\theta(y_i) - 1|^2
+]
+where (p_\theta) is the gauge function of a convex and the (y_i) are noisy measurements of the boundary of a convex set.
+
+The statistical experiments (Appendix F) can be run with
+```bash
+python scripts/fit_noisy_number_of_points.py
+```
+and 
+```bash
+python scripts/fit_noisy_different_noises.py
+```
+
+---
+
+## 2. Poisson Shape Optimization
+
+📍 Paper: Section *4.2 – Optimization of a Poisson problem* 
 
 ```bash
 python scripts/poisson_galerkin.py
@@ -49,9 +74,9 @@ where (u_\Omega) solves a Poisson equation.
 
 ---
 
-## 2. Mahler Volume Minimization
+## 3. Mahler Volume Minimization
 
-📍 Paper: Section *4.2 – Minimization of the Mahler volume* 
+📍 Paper: Appendix *E – Minimization of the Mahler volume* 
 
 ```bash
 python scripts/mahler_volume.py
@@ -67,7 +92,7 @@ among shapes satisfying certain symmetries.
 
 ---
 
-## 3. Optimization of the gradient of the torsion function
+## 4. Optimization of the gradient of the torsion function
 
 📍 Paper: Section *4.3 – Maximization of the gradient of the torsion function* 
 
@@ -79,7 +104,7 @@ This script explores torsion-based optimization objectives (related to Section 4
 
 ---
 
-## 4. Minkowski Problem
+## 5. Minkowski Problem
 
 📍 Paper: Section *4.4 – Minkowski problem* 
 
@@ -92,11 +117,11 @@ Solves a curvature prescription problem via neural parametrization.
 ---
 
 
-## 5. Comparison with PINNs
+## 6. Comparison with PINNs
 
-📍 Maximizes the torsion function by three different methods (Appendix / Section C)
+📍 Paper: Appendix *D – Comparison with PINNs*
 
-This benchmark compares:
+Maximizes the torsion function by three different methods:
 
 * Method of Fundamental Solutions (MFS)
 * Mesh-free Galerkin

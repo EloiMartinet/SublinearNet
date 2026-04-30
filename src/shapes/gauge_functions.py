@@ -91,3 +91,63 @@ class LSEGauge(nn.Module):
         out = out * x_norm
 
         return out
+
+
+class CubeGauge(nn.Module):
+    """
+    Gauge function of the unit cube [-1,1]^d.
+
+    This corresponds to the ℓ∞ norm:
+        γ(x) = max_i |x_i|
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x):
+        """
+        Parameters
+        ----------
+        x : torch.Tensor, shape (B, d)
+
+        Returns
+        -------
+        torch.Tensor, shape (B, 1)
+        """
+        return torch.max(torch.abs(x), dim=-1, keepdim=True).values
+
+
+class BallGauge(nn.Module):
+    """
+    Gauge function of the Euclidean unit ball.
+
+    This corresponds to the ℓ2 norm:
+        γ(x) = ||x||_2
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x):
+        """
+        Parameters
+        ----------
+        x : torch.Tensor, shape (B, d)
+
+        Returns
+        -------
+        torch.Tensor, shape (B, 1)
+        """
+        return torch.norm(x, dim=-1, keepdim=True)
+
+
+class OctahedronGauge(nn.Module):
+    """
+    Gauge of the ℓ1 unit ball (cross-polytope).
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x):
+        return torch.sum(torch.abs(x), dim=-1, keepdim=True)

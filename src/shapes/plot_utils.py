@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib.cm import get_cmap
+import matplotlib.cm as cm
 import numpy as np
 import os
 import shutil
@@ -157,9 +158,13 @@ def plot_shape_3d(model, output, n_points=1000, window_size=[800, 800], color_fn
     import pyvista as pv
     import torch
 
-    # Get the dtype and device of the model
-    model_dtype = next(model.parameters()).dtype
-    model_device = next(model.parameters()).device
+    try:
+        param = next(model.parameters())
+        model_dtype = param.dtype
+        model_device = param.device
+    except StopIteration:
+        model_dtype = torch.float32
+        model_device = torch.device("cpu")
 
     # Sample unit sphere
     sphere = pv.Sphere(radius=1.0, theta_resolution=n_points, phi_resolution=n_points)
@@ -203,8 +208,14 @@ def plot_shape_3d(model, output, n_points=1000, window_size=[800, 800], color_fn
     plotter.add_light(pv.Light(position=(-3,-3,2), focal_point=(0,0,0), intensity=0.2))
 
     # Camera
-    plotter.camera.Elevation(-20.0)
+    camera_pos = np.array([5.0, 3.0, 3.0])
+    focal_point = np.array([0.0, 0.0, 0.0])
 
+    plotter.camera_position = [
+        camera_pos.tolist(),
+        focal_point.tolist(),
+        (0, 0, 1),
+    ]
     plotter.show(screenshot=output)
     plotter.close()
 
@@ -259,6 +270,61 @@ def plot_shape_3d_movie(model, output, n_points=100, window_size=[800, 800]):
     plotter.close()
 
 
+
+
+def plot_point_cloud_3d(points, output, window_size=(800, 800)):
+    if isinstance(points, torch.Tensor):
+        points = points.detach().cpu().numpy()
+
+    cloud = pv.PolyData(points)
+
+    plotter = pv.Plotter(off_screen=True, window_size=window_size)
+
+    # --- Camera setup (fixed reference) ---
+    camera_pos = np.array([5.0, 3.0, 3.0])
+    focal_point = np.array([0.0, 0.0, 0.0])
+
+    plotter.camera_position = [
+        camera_pos.tolist(),
+        focal_point.tolist(),
+        (0, 0, 1),
+    ]
+
+    # --- CAMERA DISTANCE (fog / alpha) ---
+    cam_dist = np.linalg.norm(points - camera_pos, axis=1)
+    cam_norm = (cam_dist - cam_dist.min()) / (cam_dist.max() - cam_dist.min() + 1e-8)
+
+    alpha = 1 - cam_norm # np.exp(-2.5 * cam_norm)
+
+    # --- CENTER DISTANCE (coloring) ---
+    center_dist = np.linalg.norm(points, axis=1)
+    cen_norm = (center_dist - center_dist.min()) / (center_dist.max() - center_dist.min() + 1e-8)
+
+    # Apply colormap
+    colormap = cm.get_cmap("summer")
+    rgb = colormap(cen_norm)[:, :3]  # drop alpha from colormap
+
+    # --- Combine into RGBA ---
+    colors = np.zeros((points.shape[0], 4))
+    colors[:, :3] = rgb
+    colors[:, 3] = alpha
+
+    cloud["colors"] = colors
+
+    plotter.add_points(
+        cloud,
+        scalars="colors",
+        rgba=True,
+        render_points_as_spheres=True,
+        point_size=10,
+    )
+
+    plotter.add_light(pv.Light(position=(5, 5, 5), focal_point=(0, 0, 0), intensity=0.2))
+
+    plotter.show(screenshot=output)
+    plotter.close()
+
 if __name__ == '__main__':
     model = ConvexDiffeo(mesh_file='tmp.msh', input_size=2, n_unit=50)
     plot_shape(model, output="coucou.png")
+

@@ -38,7 +38,7 @@ class ConvexDiffeo(nn.Module):
         Group actions :math:`g(x)` enforcing symmetry through averaging.
     """
 
-    def __init__(self, input_size=2, n_unit=50, mode='gauge', symmetries=None):
+    def __init__(self, input_size=2, n_unit=50, mode='gauge', symmetries=None, gauge_function='LSE'):
         super().__init__()
 
         self.dim = input_size
@@ -47,11 +47,20 @@ class ConvexDiffeo(nn.Module):
         self.mode = mode
 
         # Learned convex gauge function G(x)
-        self.sublinear_nn = gf.LSEGauge(
-            input_size=input_size,
-            n_unit=n_unit
-        )
-
+        if gauge_function == 'LSE':
+            self.sublinear_nn = gf.LSEGauge(
+                input_size=input_size,
+                n_unit=n_unit
+            )
+        elif gauge_function == 'cube':
+            self.sublinear_nn = gf.CubeGauge()
+        elif gauge_function == 'ball':
+            self.sublinear_nn = gf.BallGauge()
+        elif gauge_function == 'octahedron':
+            self.sublinear_nn = gf.OctahedronGauge()
+        else:
+            print(f'Unsupported gauge function \"{gauge_function}\"')
+        
     # ------------------------------------------------------------------
     # Core map
     # ------------------------------------------------------------------
@@ -288,7 +297,7 @@ class ConvexDiffeo(nn.Module):
 
         return x
 
-    def sample_sphere(self, n_points=50000, seed=1073, requires_grad=False):
+    def sample_sphere(self, n_points=50000, seed=1073, random=False, requires_grad=False):
         """
         Sample points uniformly on the unit sphere S^{d-1}.
 
@@ -309,26 +318,30 @@ class ConvexDiffeo(nn.Module):
         torch.Tensor, shape (N, d)
             Points on the unit sphere.
         """
-        device = next(self.parameters()).device
-        dtype = next(self.parameters()).dtype
+        device = next(self.buffers(), torch.empty(0)).device
+        dtype = next(self.buffers(), torch.tensor(0.0)).dtype
 
-        if self.dim == 2:
-            theta = torch.linspace(
-                0, 2 * math.pi, n_points + 1,
-                device=device, dtype=dtype
-            )[:-1]
-            x = torch.stack([torch.cos(theta), torch.sin(theta)], dim=1)
-
-        elif self.dim == 3:
-            sphere = sphere_lattice(3, n_points)
-            x = torch.tensor(sphere, device=device, dtype=dtype)
-
-        else:
-            # Sample deterministically in order to not mess with bfgs
-            g = torch.Generator()
-            g.manual_seed(42)
-            x = torch.randn(n_points, self.dim, generator=g)
+        if random:
+            x = torch.randn(n_points, self.dim)
             x /= torch.norm(x, dim=1, keepdim=True)
+        else:
+            if self.dim == 2:
+                theta = torch.linspace(
+                    0, 2 * math.pi, n_points + 1,
+                    device=device, dtype=dtype
+                )[:-1]
+                x = torch.stack([torch.cos(theta), torch.sin(theta)], dim=1)
+
+            elif self.dim == 3:
+                sphere = sphere_lattice(3, n_points)
+                x = torch.tensor(sphere, device=device, dtype=dtype)
+
+            else:
+                # Sample deterministically in order to not mess with bfgs
+                g = torch.Generator()
+                g.manual_seed(42)
+                x = torch.randn(n_points, self.dim, generator=g)
+                x /= torch.norm(x, dim=1, keepdim=True)
 
         x = x.detach()
         if requires_grad:
