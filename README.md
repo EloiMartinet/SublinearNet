@@ -42,10 +42,10 @@ python scripts/fit_noisy_single.py
 ```
 
 This reproduces the optimization of shapes minimizing:
-[
+$$
 L(\theta) = \sum_{i=1}^n |p_\theta(y_i) - 1|^2
-]
-where (p_\theta) is the gauge function of a convex and the (y_i) are noisy measurements of the boundary of a convex set.
+$$
+where $p_\theta$ is the gauge function of a convex and the $y_i$ are noisy measurements of the boundary of a convex set.
 
 The statistical experiments (Appendix F) can be run with
 ```bash
@@ -67,10 +67,10 @@ python scripts/poisson_galerkin.py
 ```
 
 This reproduces the optimization of shapes minimizing:
-[
+$$
 J(\Omega) = \int_\Omega u_\Omega
-]
-where (u_\Omega) solves a Poisson equation.
+$$
+where $u_\Omega$ solves a Poisson equation.
 
 ---
 
@@ -127,9 +127,8 @@ Maximizes the torsion function by three different methods:
 * Mesh-free Galerkin
 * Physics-Informed Neural Networks (PINNs)
 
----
 
-### ✅ Run all experiments (recommended)
+### ✅ Run all experiments
 
 ```bash
 python scripts/run_torsion_experiments.py
@@ -146,9 +145,8 @@ This will automatically:
    * `config_3`
 4. Generate plots via `plot_torsion_experiments.py`
 
----
 
-### ⚙️ Run individually (optional)
+### ⚙️ Run individually
 
 #### MFS
 
@@ -172,8 +170,6 @@ python scripts/torsion_PINN.py --config config_3
 
 👉 The three configs correspond to different hyperparameter settings used in the PINN comparison (see paper).
 
----
-
 ### 📊 Plotting results
 
 ```bash
@@ -182,8 +178,6 @@ python scripts/plot_torsion_experiments.py
 
 ⚠️ Requires running the experiments first.
 
----
-
 ### 🔍 Hyperparameter Search (optional)
 
 ```bash
@@ -191,8 +185,6 @@ python scripts/torsion_parameter_search.py
 ```
 
 This reproduces the PINN hyperparameter search described in the paper.
-
----
 
 ## 📁 Output Files
 
