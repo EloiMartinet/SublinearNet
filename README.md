@@ -209,10 +209,13 @@ res/
 If you use this code in you own research, please cite:
 
 ```bibtex
-@article{sublinear_nn_convex_sets,
-  title={Parametrizing Convex Sets Using Sublinear Neural Networks},
-  author={Anonymous},
-  journal={NeurIPS},
-  year={2026}
+@misc{martinet2026parametrizingconvexsetsusing,
+      title={Parametrizing Convex Sets Using Sublinear Neural Networks}, 
+      author={Eloi Martinet},
+      year={2026},
+      eprint={2605.03520},
+      archivePrefix={arXiv},
+      primaryClass={math.OC},
+      url={https://arxiv.org/abs/2605.03520}, 
 }
 ```
